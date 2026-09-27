@@ -9,7 +9,7 @@ const stackTools = [
 	{ name: "WooCommerce", slug: "woocommerce", color: "96588A" },
 	{ name: "TikTok", slug: "tiktok", color: "FFFFFF" },
 	{ name: "Google Ads", slug: "googleads", color: "FFFFFF" },
-	{ name: "ChatGPT", slug: "openai", color: "FFFFFF" },
+	{ name: "ChatGPT", slug: "chatgpt", color: "FFFFFF", textFallback: "GPT" },
 	{ name: "Claude", slug: "claude", color: "D97757" },
 ];
 
@@ -128,12 +128,21 @@ const stack = stackTools.map((tool, i) => {
 							style={`top:${tool.top}%; left:${tool.left}%; width:${tool.size}%; height:${tool.size}%; transform: translate(-50%, -50%);`}
 							title={tool.name}
 						>
-							<img
-								src={`https://cdn.simpleicons.org/${tool.slug}/${tool.color}`}
-								alt={tool.name}
-								class="h-[60%] w-[60%] object-contain"
-								loading="lazy"
-							/>
+							{tool.textFallback ? (
+								<span
+									class="flex h-full w-full items-center justify-center rounded-2xl bg-[#10a37f] text-[0.5em] leading-none font-extrabold text-white"
+									aria-label={tool.name}
+								>
+									{tool.textFallback}
+								</span>
+							) : (
+								<img
+									src={`https://cdn.simpleicons.org/${tool.slug}/${tool.color}`}
+									alt={tool.name}
+									class="h-[60%] w-[60%] object-contain"
+									loading="lazy"
+								/>
+							)}
 						</div>
 					))
 				}

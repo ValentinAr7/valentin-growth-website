@@ -10,7 +10,7 @@ const rowA = [
 const rowB = [
 	{ name: "Instagram", slug: "instagram", color: "E4405F" },
 	{ name: "TikTok", slug: "tiktok", color: "FFFFFF" },
-	{ name: "ChatGPT", slug: "openai", color: "FFFFFF" },
+	{ name: "ChatGPT", slug: "chatgpt", color: "FFFFFF", textFallback: "GPT" },
 	{ name: "Claude", slug: "claude", color: "D97757" },
 	{ name: "Google Analytics", slug: "googleanalytics", color: "FFFFFF" },
 ];
@@ -45,12 +45,18 @@ const rowB = [
 				{
 					[...rowB, ...rowB].map((tool) => (
 						<span class="chip">
-							<img
-								src={`https://cdn.simpleicons.org/${tool.slug}/${tool.color}`}
-								alt=""
-								class="h-5 w-5 object-contain sm:h-6 sm:w-6"
-								loading="lazy"
-							/>
+							{tool.textFallback ? (
+								<span class="flex h-5 w-5 items-center justify-center rounded-full bg-[#10a37f] text-[9px] font-extrabold text-white sm:h-6 sm:w-6">
+									{tool.textFallback}
+								</span>
+							) : (
+								<img
+									src={`https://cdn.simpleicons.org/${tool.slug}/${tool.color}`}
+									alt=""
+									class="h-5 w-5 object-contain sm:h-6 sm:w-6"
+									loading="lazy"
+								/>
+							)}
 							{tool.name}
 						</span>
 					))
