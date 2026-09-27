@@ -1,37 +1,26 @@
 ---
-// Иконки, подредени по извита диагонал около снимката — размерът расте
-// последователно по протежение на дъгата, а всяка получава своя скорост
-// на леко вертикално "плаване" при скрол (виж <script> по-долу).
-const stackTools = [
-	{ name: "Shopify", slug: "shopify", color: "95BF47" },
-	{ name: "Meta Ads", slug: "meta", color: "0081FB" },
-	{ name: "Instagram", slug: "instagram", color: "E4405F" },
-	{ name: "WooCommerce", slug: "woocommerce", color: "96588A" },
-	{ name: "TikTok", slug: "tiktok", color: "FFFFFF" },
-	{ name: "Google Ads", slug: "googleads", color: "FFFFFF" },
-	{ name: "ChatGPT", slug: "chatgpt", color: "FFFFFF", textFallback: "GPT" },
-	{ name: "Claude", slug: "claude", color: "D97757" },
+// Плочки с инструменти, "прилепени" от двете страни на снимката (само desktop —
+// на мобилно композицията е прекалено тясна за странично плаващи елементи,
+// затова стекът се вижда в ToolMarquee секцията под hero-то).
+const leftTools = [
+	{ name: "Meta", slug: "meta", color: "0081FB", top: 10, left: -6, rotate: -6 },
+	{ name: "TikTok", slug: "tiktok", color: "FFFFFF", top: 34, left: -10, rotate: 5 },
+	{ name: "ChatGPT", textFallback: "GPT", fallbackBg: "#10a37f", top: 60, left: -8, rotate: -4 },
+	{ name: "Claude", slug: "claude", color: "D97757", top: 85, left: -3, rotate: 6 },
 ];
 
-const startAngle = -165;
-const endAngle = 75;
+const rightTools = [
+	{ name: "Shopify", slug: "shopify", color: "95BF47", top: 6, left: 100, rotate: 5 },
+	{ name: "WooCommerce", slug: "woocommerce", color: "96588A", top: 27, left: 107, rotate: -6 },
+	{ name: "Google Analytics", slug: "googleanalytics", color: "E37400", top: 49, left: 100, rotate: 4 },
+	{ name: "Instagram", slug: "instagram", color: "E4405F", top: 71, left: 107, rotate: -5 },
+	{ name: "Klaviyo", textFallback: "K", fallbackBg: "#374151", top: 91, left: 100, rotate: 6 },
+];
 
-const stack = stackTools.map((tool, i) => {
-	const t = i / (stackTools.length - 1);
-	const angleDeg = startAngle + (endAngle - startAngle) * t;
-	const angle = (angleDeg * Math.PI) / 180;
-	const wobble = Math.sin(t * Math.PI * 2.4) * 3;
-	const radius = 45 + wobble;
-	const size = 15 + t * 13;
-	const speed = (i % 2 === 0 ? 1 : -1) * (10 + t * 16);
-	return {
-		...tool,
-		top: 50 + Math.sin(angle) * radius,
-		left: 50 + Math.cos(angle) * radius,
-		size,
-		speed,
-	};
-});
+const allTools = [...leftTools, ...rightTools].map((tool, i) => ({
+	...tool,
+	speed: (i % 2 === 0 ? 1 : -1) * (7 + (i % 4) * 3),
+}));
 ---
 
 <section id="hero-section" class="relative isolate overflow-hidden pt-28 pb-20 sm:pt-32 sm:pb-24">
@@ -43,114 +32,61 @@ const stack = stackTools.map((tool, i) => {
 		>
 		</div>
 		<div
-			class="absolute top-[5%] right-1/2 h-[360px] w-[360px] translate-x-[60%] rounded-full bg-teal-500/15 blur-[110px] sm:h-[480px] sm:w-[480px]"
+			class="absolute top-[5%] right-1/2 h-[360px] w-[360px] translate-x-[60%] rounded-full bg-cyan-500/10 blur-[110px] sm:h-[480px] sm:w-[480px]"
 		>
 		</div>
 		<div
 			id="hero-spotlight"
 			class="absolute inset-0"
-			style="background: radial-gradient(560px circle at var(--mx, 50%) var(--my, 20%), rgba(99,102,241,0.14), transparent 60%);"
+			style="background: radial-gradient(560px circle at var(--mx, 50%) var(--my, 20%), rgba(34,211,238,0.10), transparent 60%);"
 		>
 		</div>
 	</div>
 
-	<div class="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-14 px-6 md:grid-cols-2 md:gap-10">
+	<div class="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 px-6 md:grid-cols-[1fr_1.05fr] md:gap-10 md:px-10">
 		<!-- послание (ляво на desktop) -->
 		<div class="order-2 text-center md:order-1 md:text-left">
-			<div class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-xs font-medium text-gray-300 sm:text-sm">
-				<span class="relative flex h-1.5 w-1.5">
-					<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-400 opacity-75"></span>
-					<span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent-500"></span>
-				</span>
-				Отворен за нови проекти
+			<div class="inline-flex flex-col items-center md:items-start">
+				<p class="text-xs font-semibold tracking-[0.25em] text-gray-400 uppercase">
+					Маркетинг & E-commerce
+				</p>
+				<span class="mt-2 h-[3px] w-10 rounded-full bg-cyan-400"></span>
 			</div>
 
-			<h1 class="mt-5 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-3 text-3xl leading-[1.15] font-semibold text-white sm:gap-x-3 sm:text-4xl md:justify-start md:text-5xl">
-				<span class="font-serif font-normal text-gray-300 italic">Здравей,</span>
-				<span>аз съм Валентин</span>
-				<span>—</span>
-				<span class="font-extrabold">маркетинг партньор</span>
-				<span
-					class="inline-block rounded-full bg-gradient-to-br from-brand-400 to-brand-700 align-middle shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]"
-					style="width: 2.2em; height: 1em;"
-					aria-hidden="true"
-				>
-				</span>
-				<span class="font-serif font-normal text-gray-300 italic">за предвидим</span>
-				<span>E-commerce растеж</span>
-				<span
-					class="inline-block rounded-full bg-gradient-to-br from-accent-400 to-teal-400 align-middle shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]"
-					style="width: 2em; height: 1em;"
-					aria-hidden="true"
-				>
-				</span>
-				<span>.</span>
+			<h1 class="mt-5 text-4xl leading-[1.05] font-black tracking-tight text-white sm:text-5xl md:text-6xl">
+				<span class="block">Твоят бизнес.</span>
+				<span class="block">Моят опит.</span>
+				<span class="block text-cyan-400">Ясен план за растеж.</span>
 			</h1>
 
-			<p class="mx-auto mt-5 max-w-xl text-base text-gray-400 sm:text-lg md:mx-0">
-				Стратегия, платена реклама и оптимизация на конверсиите за онлайн магазини,
-				които искат измерим резултат — не догадки.
+			<p class="mx-auto mt-5 max-w-md text-base text-gray-400 sm:text-lg md:mx-0">
+				Аз съм Валентин — маркетинг и e-commerce консултант. Работя директно с теб
+				върху рекламите, офертите и клиентското преживяване, за да превърнем идеите
+				за развитие в конкретни действия.
 			</p>
 
-			<div class="mt-8 flex w-full flex-col items-center justify-center gap-3 sm:mt-10 sm:w-auto sm:flex-row md:justify-start">
+			<div class="mt-8 flex w-full flex-col items-center justify-center gap-3 sm:w-auto sm:flex-row md:justify-start">
 				<a
 					href="#contact"
-					class="w-full rounded-full bg-accent-500 px-8 py-3 text-base font-semibold text-ink-900 transition hover:bg-accent-400 sm:w-auto"
+					class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-cyan-400 px-7 py-3 text-base font-semibold text-ink-900 transition hover:bg-cyan-300 sm:w-auto"
 				>
-					Запази безплатна консултация
+					Нека поговорим <span aria-hidden="true">↗</span>
 				</a>
 				<a
-					href="#results"
-					class="w-full rounded-full border border-white/15 px-8 py-3 text-base font-semibold text-white transition hover:bg-white/5 sm:w-auto"
+					href="#services"
+					class="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/20 px-7 py-3 text-base font-semibold text-white transition hover:bg-white/5 sm:w-auto"
 				>
-					Виж резултатите
+					Виж моя подход
 				</a>
 			</div>
 		</div>
 
-		<!-- снимка + извит стек от иконки (дясно на desktop) -->
-		<div class="order-1 mx-auto [perspective:1200px] md:order-2" style="width: min(420px, 88vw);">
-			<div
-				id="hero-orb"
-				class="relative aspect-square w-full transition-transform duration-150 ease-out"
-			>
+		<!-- снимка + плочки с инструменти (дясно на desktop) -->
+		<div class="order-1 md:order-2">
+			<div class="relative mx-auto [perspective:1200px]" style="width: min(420px, 78vw);">
 				<div
-					class="pointer-events-none absolute -inset-8 rounded-full bg-brand-500/25 blur-3xl"
-				>
-				</div>
-
-				<!-- извит стек от иконки -->
-				{
-					stack.map((tool) => (
-						<div
-							class="stack-icon absolute flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06] shadow-lg backdrop-blur"
-							data-speed={tool.speed}
-							style={`top:${tool.top}%; left:${tool.left}%; width:${tool.size}%; height:${tool.size}%; transform: translate(-50%, -50%);`}
-							title={tool.name}
-						>
-							{tool.textFallback ? (
-								<span
-									class="flex h-full w-full items-center justify-center rounded-2xl bg-[#10a37f] text-[0.5em] leading-none font-extrabold text-white"
-									aria-label={tool.name}
-								>
-									{tool.textFallback}
-								</span>
-							) : (
-								<img
-									src={`https://cdn.simpleicons.org/${tool.slug}/${tool.color}`}
-									alt={tool.name}
-									class="h-[60%] w-[60%] object-contain"
-									loading="lazy"
-								/>
-							)}
-						</div>
-					))
-				}
-
-				<!-- снимка -->
-				<div
-					class="absolute overflow-hidden rounded-full border border-white/10 bg-ink-800 shadow-[0_0_60px_-15px_rgba(99,102,241,0.45)]"
-					style="inset: 20%;"
+					id="hero-photo"
+					class="relative h-[380px] w-full overflow-hidden rounded-[2rem] border border-white/10 shadow-2xl transition-transform duration-150 ease-out sm:h-[440px] md:h-[520px]"
 				>
 					<img
 						src="/images/profile-image.png"
@@ -161,9 +97,42 @@ const stack = stackTools.map((tool, i) => {
 					<div class="hidden h-full w-full items-center justify-center text-sm text-gray-500">
 						[ снимка на Валентин ]
 					</div>
-					<div class="pointer-events-none absolute inset-0 rounded-full bg-[radial-gradient(circle_at_50%_35%,transparent_45%,rgba(0,0,0,0.4)_100%)]">
+					<div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-900/70 via-transparent to-cyan-500/10">
+					</div>
+					<div class="pointer-events-none absolute inset-0 shadow-[inset_0_0_60px_20px_rgba(0,0,0,0.55)]">
 					</div>
 				</div>
+
+				<!-- плочки с инструменти, само на desktop -->
+				{
+					allTools.map((tool) => (
+						<div
+							class="tool-tile absolute hidden flex-col items-center gap-1.5 rounded-2xl border border-white/10 bg-ink-800/90 px-3 py-2.5 shadow-lg backdrop-blur md:flex"
+							data-speed={tool.speed}
+							data-rotate={tool.rotate}
+							style={`top:${tool.top}%; left:${tool.left}%; transform: translate(-50%, -50%) rotate(${tool.rotate}deg);`}
+						>
+							{tool.textFallback ? (
+								<span
+									class="flex h-6 w-6 items-center justify-center rounded-md border border-white/10 text-[8px] font-extrabold text-white"
+									style={`background:${tool.fallbackBg};`}
+								>
+									{tool.textFallback}
+								</span>
+							) : (
+								<img
+									src={`https://cdn.simpleicons.org/${tool.slug}/${tool.color}`}
+									alt=""
+									class="h-6 w-6 object-contain"
+									loading="lazy"
+								/>
+							)}
+							<span class="text-[10px] font-medium whitespace-nowrap text-gray-300">
+								{tool.name}
+							</span>
+						</div>
+					))
+				}
 			</div>
 		</div>
 	</div>
@@ -172,22 +141,23 @@ const stack = stackTools.map((tool, i) => {
 <script>
 	function initHeroEffects() {
 		const heroSection = document.getElementById("hero-section") as HTMLElement | null;
-		const orb = document.getElementById("hero-orb") as HTMLElement | null;
-		const icons = Array.from(document.querySelectorAll<HTMLElement>(".stack-icon"));
-		if (!heroSection || !orb) return;
+		const photo = document.getElementById("hero-photo") as HTMLElement | null;
+		const tiles = Array.from(document.querySelectorAll<HTMLElement>(".tool-tile"));
+		if (!heroSection || !photo) return;
 
 		const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-		// --- скрол: иконките леко "плават" нагоре/надолу спрямо позицията на hero-то ---
+		// --- скрол: плочките леко "плават" нагоре/надолу спрямо позицията на hero-то ---
 		let ticking = false;
 		function updateParallax() {
 			ticking = false;
 			const rect = heroSection!.getBoundingClientRect();
 			const progress = Math.max(-1, Math.min(1, -rect.top / (rect.height || 1)));
-			icons.forEach((icon) => {
-				const speed = parseFloat(icon.dataset.speed ?? "15");
+			tiles.forEach((tile) => {
+				const speed = parseFloat(tile.dataset.speed ?? "10");
+				const rotate = parseFloat(tile.dataset.rotate ?? "0");
 				const offset = prefersReducedMotion ? 0 : progress * speed;
-				icon.style.transform = `translate(-50%, calc(-50% + ${offset}px))`;
+				tile.style.transform = `translate(-50%, -50%) rotate(${rotate}deg) translateY(${offset}px)`;
 			});
 		}
 		function onScroll() {
@@ -200,32 +170,32 @@ const stack = stackTools.map((tool, i) => {
 		window.addEventListener("resize", updateParallax);
 		updateParallax();
 
-		// --- мишка: лек 3D наклон на цялата композиция (снимка + иконки) ---
+		// --- мишка: лек 3D наклон на снимката + мек spotlight на фона ---
 		const prefersFinePointer = window.matchMedia("(pointer: fine)").matches;
 		if (!prefersFinePointer || prefersReducedMotion) return;
 
-		const maxTilt = 6;
+		const maxTilt = 5;
 
 		function handleMove(e: MouseEvent) {
 			const heroRect = heroSection!.getBoundingClientRect();
 			heroSection!.style.setProperty("--mx", `${e.clientX - heroRect.left}px`);
 			heroSection!.style.setProperty("--my", `${e.clientY - heroRect.top}px`);
 
-			const orbRect = orb!.getBoundingClientRect();
-			const cx = orbRect.left + orbRect.width / 2;
-			const cy = orbRect.top + orbRect.height / 2;
+			const photoRect = photo!.getBoundingClientRect();
+			const cx = photoRect.left + photoRect.width / 2;
+			const cy = photoRect.top + photoRect.height / 2;
 			const dx = e.clientX - cx;
 			const dy = e.clientY - cy;
 
 			const distance = Math.hypot(dx, dy);
-			const influence = Math.max(0, 1 - distance / (orbRect.width * 3));
-			const tiltX = Math.max(-1, Math.min(1, -dy / 400)) * maxTilt * influence;
-			const tiltY = Math.max(-1, Math.min(1, dx / 400)) * maxTilt * influence;
-			orb!.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+			const influence = Math.max(0, 1 - distance / (photoRect.width * 3));
+			const tiltX = Math.max(-1, Math.min(1, -dy / 500)) * maxTilt * influence;
+			const tiltY = Math.max(-1, Math.min(1, dx / 500)) * maxTilt * influence;
+			photo!.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
 		}
 
 		function handleLeave() {
-			orb!.style.transform = "rotateX(0deg) rotateY(0deg)";
+			photo!.style.transform = "rotateX(0deg) rotateY(0deg)";
 		}
 
 		window.addEventListener("mousemove", handleMove, { passive: true });
