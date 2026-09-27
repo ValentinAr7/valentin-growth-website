@@ -30,20 +30,6 @@ const stars = Array.from({ length: 70 }, () => ({
 	delay: rand() * 4,
 	duration: rand() * 3 + 2,
 }));
-
-// Диамантена рамка около ореола — равномерно разположени "диаманти" по обиколката.
-const diamondCount = 20;
-const diamonds = Array.from({ length: diamondCount }, (_, i) => {
-	const angle = (i / diamondCount) * Math.PI * 2;
-	const big = i % 3 === 0;
-	return {
-		angle,
-		top: 50 + Math.sin(angle) * 50,
-		left: 50 + Math.cos(angle) * 50,
-		size: big ? 13 : 7,
-		delay: (i * 0.17) % 3.5,
-	};
-});
 ---
 
 <section
@@ -57,7 +43,7 @@ const diamonds = Array.from({ length: diamondCount }, (_, i) => {
 		<div
 			id="hero-spotlight"
 			class="absolute inset-0 transition-[background] duration-300"
-			style="background: radial-gradient(600px circle at var(--mx) var(--my), rgba(168,85,247,0.18), transparent 60%);"
+			style="background: radial-gradient(600px circle at var(--mx) var(--my), rgba(99,102,241,0.16), transparent 60%);"
 		>
 		</div>
 		{
@@ -76,24 +62,11 @@ const diamonds = Array.from({ length: diamondCount }, (_, i) => {
 			<div id="hero-orb" class="relative aspect-square w-full transition-transform duration-150 ease-out">
 				<div
 					id="hero-orb-glow"
-					class="pointer-events-none absolute -inset-8 rounded-full bg-gradient-to-br from-violet-500/50 via-fuchsia-500/30 to-violet-500/50 blur-3xl transition-transform duration-150 ease-out"
+					class="pointer-events-none absolute -inset-6 rounded-full bg-brand-500/40 blur-3xl transition-transform duration-150 ease-out"
 				>
 				</div>
 
-				<!-- диамантена рамка -->
-				<div class="pointer-events-none absolute -inset-5 sm:-inset-6" id="hero-diamond-ring">
-					{
-						diamonds.map((d) => (
-							<span
-								class="diamond absolute rounded-[3px] bg-gradient-to-br from-violet-200 via-violet-400 to-fuchsia-500"
-								data-angle={d.angle}
-								style={`top:${d.top}%; left:${d.left}%; width:${d.size}px; height:${d.size}px; animation-delay:${d.delay}s;`}
-							/>
-						))
-					}
-				</div>
-
-				<div class="relative h-full w-full overflow-hidden rounded-full border border-violet-400/20 bg-ink-800 shadow-[0_0_90px_-15px_rgba(168,85,247,0.55)]">
+				<div class="relative h-full w-full overflow-hidden rounded-full border border-white/10 bg-ink-800 shadow-[0_0_80px_-20px_rgba(99,102,241,0.5)]">
 					<img
 						src="/images/profile-image.png"
 						alt="Валентин Арнаутски"
@@ -168,7 +141,6 @@ const diamonds = Array.from({ length: diamondCount }, (_, i) => {
 		const heroSection = document.getElementById("hero-section") as HTMLElement | null;
 		const orb = document.getElementById("hero-orb") as HTMLElement | null;
 		const glow = document.getElementById("hero-orb-glow") as HTMLElement | null;
-		const diamonds = document.querySelectorAll<HTMLElement>("#hero-diamond-ring .diamond");
 		if (!heroSection || !orb || !glow) return;
 
 		const prefersFinePointer = window.matchMedia("(pointer: fine)").matches;
@@ -188,24 +160,11 @@ const diamonds = Array.from({ length: diamondCount }, (_, i) => {
 			const dx = e.clientX - cx;
 			const dy = e.clientY - cy;
 
-			const cursorAngle = Math.atan2(dy, dx);
+			const angle = Math.atan2(dy, dx);
 			const radius = orbRect.width / 2;
-			const gx = Math.cos(cursorAngle) * radius;
-			const gy = Math.sin(cursorAngle) * radius;
+			const gx = Math.cos(angle) * radius;
+			const gy = Math.sin(angle) * radius;
 			glow!.style.transform = `translate(${gx * 0.6}px, ${gy * 0.6}px)`;
-
-			diamonds.forEach((el) => {
-				const dAngle = parseFloat(el.dataset.angle ?? "0");
-				let diff = Math.abs(cursorAngle - dAngle);
-				if (diff > Math.PI) diff = Math.PI * 2 - diff;
-				const intensity = Math.max(0, 1 - diff / (Math.PI / 2));
-				el.style.opacity = String(0.35 + 0.65 * intensity);
-				el.style.setProperty(
-					"transform",
-					`translate(-50%, -50%) rotate(45deg) scale(${1 + 0.7 * intensity})`,
-				);
-				el.style.boxShadow = `0 0 ${6 + 20 * intensity}px ${2 + 4 * intensity}px rgba(192,132,252,${0.4 + 0.5 * intensity})`;
-			});
 
 			const distance = Math.hypot(dx, dy);
 			const influence = Math.max(0, 1 - distance / (radius * 4));
@@ -225,32 +184,3 @@ const diamonds = Array.from({ length: diamondCount }, (_, i) => {
 	initHeroEffects();
 	document.addEventListener("astro:page-load", initHeroEffects);
 </script>
-
-<style>
-	.diamond {
-		transform: translate(-50%, -50%) rotate(45deg);
-		opacity: 0.55;
-		box-shadow: 0 0 10px 2px rgba(192, 132, 252, 0.45);
-		transition:
-			opacity 0.15s ease-out,
-			transform 0.15s ease-out,
-			box-shadow 0.15s ease-out;
-		animation: diamond-pulse 3.5s ease-in-out infinite;
-	}
-
-	@keyframes diamond-pulse {
-		0%,
-		100% {
-			filter: brightness(1);
-		}
-		50% {
-			filter: brightness(1.4);
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.diamond {
-			animation: none;
-		}
-	}
-</style>
