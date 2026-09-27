@@ -2,36 +2,27 @@
 const navItems = [
 	{ label: "Услуги", href: "#services" },
 	{ label: "Резултати", href: "#results" },
-	{ label: "Процес", href: "#process" },
-	{ label: "Отзиви", href: "#testimonials" },
 	{ label: "Контакт", href: "#contact" },
 ];
 ---
 
-<header class="sticky top-0 z-50 border-b border-white/5 bg-ink-900/80 backdrop-blur">
-	<div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-		<a href="#top" class="text-lg font-bold tracking-tight text-white">
-			Валентин Арнаутски
-		</a>
+<header class="absolute inset-x-0 top-0 z-50">
+	<div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
+		<span class="text-xs font-medium uppercase tracking-[0.2em] text-gray-400">
+			Marketing & E-commerce Growth Expert
+		</span>
 
-		<nav class="hidden items-center gap-8 md:flex">
+		<nav class="flex items-center gap-2">
 			{
 				navItems.map((item) => (
 					<a
 						href={item.href}
-						class="text-sm font-medium text-gray-300 transition hover:text-white"
+						class="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-medium text-gray-200 backdrop-blur transition hover:border-white/20 hover:bg-white/[0.08]"
 					>
 						{item.label}
 					</a>
 				))
 			}
 		</nav>
-
-		<a
-			href="#contact"
-			class="rounded-full bg-accent-500 px-5 py-2 text-sm font-semibold text-ink-900 transition hover:bg-accent-400"
-		>
-			Запази консултация
-		</a>
 	</div>
 </header>
