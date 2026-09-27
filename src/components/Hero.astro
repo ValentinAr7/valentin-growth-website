@@ -1,8 +1,41 @@
 ---
+// Иконки, подредени по извита диагонал около снимката — размерът расте
+// последователно по протежение на дъгата, а всяка получава своя скорост
+// на леко вертикално "плаване" при скрол (виж <script> по-долу).
+const stackTools = [
+	{ name: "Shopify", slug: "shopify", color: "95BF47" },
+	{ name: "Meta Ads", slug: "meta", color: "0081FB" },
+	{ name: "Instagram", slug: "instagram", color: "E4405F" },
+	{ name: "WooCommerce", slug: "woocommerce", color: "96588A" },
+	{ name: "TikTok", slug: "tiktok", color: "FFFFFF" },
+	{ name: "Google Ads", slug: "googleads", color: "FFFFFF" },
+	{ name: "ChatGPT", slug: "openai", color: "FFFFFF" },
+	{ name: "Claude", slug: "claude", color: "D97757" },
+];
+
+const startAngle = -165;
+const endAngle = 75;
+
+const stack = stackTools.map((tool, i) => {
+	const t = i / (stackTools.length - 1);
+	const angleDeg = startAngle + (endAngle - startAngle) * t;
+	const angle = (angleDeg * Math.PI) / 180;
+	const wobble = Math.sin(t * Math.PI * 2.4) * 3;
+	const radius = 45 + wobble;
+	const size = 15 + t * 13;
+	const speed = (i % 2 === 0 ? 1 : -1) * (10 + t * 16);
+	return {
+		...tool,
+		top: 50 + Math.sin(angle) * radius,
+		left: 50 + Math.cos(angle) * radius,
+		size,
+		speed,
+	};
+});
 ---
 
-<section id="hero-section" class="relative isolate overflow-hidden pt-28 pb-16 sm:pt-32 sm:pb-20">
-	<!-- фон: тъмна база + меки, размазани цветни петна (aurora), вместо "космос" -->
+<section id="hero-section" class="relative isolate overflow-hidden pt-28 pb-20 sm:pt-32 sm:pb-24">
+	<!-- фон: тъмна база + меки, размазани цветни петна (aurora) -->
 	<div class="pointer-events-none absolute inset-0">
 		<div class="absolute inset-0 bg-ink-900"></div>
 		<div
@@ -21,19 +54,95 @@
 		</div>
 	</div>
 
-	<div class="relative mx-auto flex max-w-6xl flex-col items-center px-6 text-center">
-		<!-- снимка -->
-		<div class="mb-8 [perspective:1000px] sm:mb-10" style="width: min(220px, 42vw);">
+	<div class="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-14 px-6 md:grid-cols-2 md:gap-10">
+		<!-- послание (ляво на desktop) -->
+		<div class="order-2 text-center md:order-1 md:text-left">
+			<div class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-xs font-medium text-gray-300 sm:text-sm">
+				<span class="relative flex h-1.5 w-1.5">
+					<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-400 opacity-75"></span>
+					<span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent-500"></span>
+				</span>
+				Отворен за нови проекти
+			</div>
+
+			<h1 class="mt-5 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-3 text-3xl leading-[1.15] font-semibold text-white sm:gap-x-3 sm:text-4xl md:justify-start md:text-5xl">
+				<span class="font-serif font-normal text-gray-300 italic">Здравей,</span>
+				<span>аз съм Валентин</span>
+				<span>—</span>
+				<span class="font-extrabold">маркетинг партньор</span>
+				<span
+					class="inline-block rounded-full bg-gradient-to-br from-brand-400 to-brand-700 align-middle shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]"
+					style="width: 2.2em; height: 1em;"
+					aria-hidden="true"
+				>
+				</span>
+				<span class="font-serif font-normal text-gray-300 italic">за предвидим</span>
+				<span>E-commerce растеж</span>
+				<span
+					class="inline-block rounded-full bg-gradient-to-br from-accent-400 to-teal-400 align-middle shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]"
+					style="width: 2em; height: 1em;"
+					aria-hidden="true"
+				>
+				</span>
+				<span>.</span>
+			</h1>
+
+			<p class="mx-auto mt-5 max-w-xl text-base text-gray-400 sm:text-lg md:mx-0">
+				Стратегия, платена реклама и оптимизация на конверсиите за онлайн магазини,
+				които искат измерим резултат — не догадки.
+			</p>
+
+			<div class="mt-8 flex w-full flex-col items-center justify-center gap-3 sm:mt-10 sm:w-auto sm:flex-row md:justify-start">
+				<a
+					href="#contact"
+					class="w-full rounded-full bg-accent-500 px-8 py-3 text-base font-semibold text-ink-900 transition hover:bg-accent-400 sm:w-auto"
+				>
+					Запази безплатна консултация
+				</a>
+				<a
+					href="#results"
+					class="w-full rounded-full border border-white/15 px-8 py-3 text-base font-semibold text-white transition hover:bg-white/5 sm:w-auto"
+				>
+					Виж резултатите
+				</a>
+			</div>
+		</div>
+
+		<!-- снимка + извит стек от иконки (дясно на desktop) -->
+		<div class="order-1 mx-auto [perspective:1200px] md:order-2" style="width: min(420px, 88vw);">
 			<div
 				id="hero-orb"
 				class="relative aspect-square w-full transition-transform duration-150 ease-out"
 			>
 				<div
-					class="pointer-events-none absolute -inset-4 rounded-full bg-brand-500/30 blur-2xl sm:-inset-6"
+					class="pointer-events-none absolute -inset-8 rounded-full bg-brand-500/25 blur-3xl"
 				>
 				</div>
 
-				<div class="relative h-full w-full overflow-hidden rounded-full border border-white/10 bg-ink-800 shadow-[0_0_60px_-15px_rgba(99,102,241,0.45)]">
+				<!-- извит стек от иконки -->
+				{
+					stack.map((tool) => (
+						<div
+							class="stack-icon absolute flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06] shadow-lg backdrop-blur"
+							data-speed={tool.speed}
+							style={`top:${tool.top}%; left:${tool.left}%; width:${tool.size}%; height:${tool.size}%; transform: translate(-50%, -50%);`}
+							title={tool.name}
+						>
+							<img
+								src={`https://cdn.simpleicons.org/${tool.slug}/${tool.color}`}
+								alt={tool.name}
+								class="h-[60%] w-[60%] object-contain"
+								loading="lazy"
+							/>
+						</div>
+					))
+				}
+
+				<!-- снимка -->
+				<div
+					class="absolute overflow-hidden rounded-full border border-white/10 bg-ink-800 shadow-[0_0_60px_-15px_rgba(99,102,241,0.45)]"
+					style="inset: 20%;"
+				>
 					<img
 						src="/images/profile-image.png"
 						alt="Валентин Арнаутски"
@@ -48,68 +157,6 @@
 				</div>
 			</div>
 		</div>
-
-		<div class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-xs font-medium text-gray-300 sm:text-sm">
-			<span class="relative flex h-1.5 w-1.5">
-				<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-400 opacity-75"></span>
-				<span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent-500"></span>
-			</span>
-			Отворен за нови проекти
-		</div>
-
-		<h1 class="mx-auto mt-5 flex max-w-3xl flex-wrap items-center justify-center gap-x-2.5 gap-y-3 text-3xl leading-[1.15] font-semibold text-white sm:gap-x-3 sm:text-4xl md:text-5xl">
-			<span class="font-serif font-normal text-gray-300 italic">Здравей,</span>
-			<span>аз съм Валентин</span>
-			<span
-				class="inline-block overflow-hidden rounded-full align-middle"
-				style="width: 2.5em; height: 1.05em;"
-			>
-				<img
-					src="/images/profile-image.png"
-					alt=""
-					class="h-full w-full object-cover"
-					style="object-position: center 20%;"
-					onerror="this.parentElement.style.display='none';"
-				/>
-			</span>
-			<span>—</span>
-			<span class="font-extrabold">маркетинг партньор</span>
-			<span
-				class="inline-block rounded-full bg-gradient-to-br from-brand-400 to-brand-700 align-middle shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]"
-				style="width: 2.2em; height: 1em;"
-				aria-hidden="true"
-			>
-			</span>
-			<span class="font-serif font-normal text-gray-300 italic">за предвидим</span>
-			<span>E-commerce растеж</span>
-			<span
-				class="inline-block rounded-full bg-gradient-to-br from-accent-400 to-teal-400 align-middle shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]"
-				style="width: 2em; height: 1em;"
-				aria-hidden="true"
-			>
-			</span>
-			<span>.</span>
-		</h1>
-
-		<p class="mx-auto mt-5 max-w-xl text-base text-gray-400 sm:text-lg">
-			Стратегия, платена реклама и оптимизация на конверсиите за онлайн магазини,
-			които искат измерим резултат — не догадки.
-		</p>
-
-		<div class="mt-8 flex w-full flex-col items-center justify-center gap-3 sm:mt-10 sm:w-auto sm:flex-row">
-			<a
-				href="#contact"
-				class="w-full rounded-full bg-accent-500 px-8 py-3 text-base font-semibold text-ink-900 transition hover:bg-accent-400 sm:w-auto"
-			>
-				Запази безплатна консултация
-			</a>
-			<a
-				href="#results"
-				class="w-full rounded-full border border-white/15 px-8 py-3 text-base font-semibold text-white transition hover:bg-white/5 sm:w-auto"
-			>
-				Виж резултатите
-			</a>
-		</div>
 	</div>
 </section>
 
@@ -117,10 +164,35 @@
 	function initHeroEffects() {
 		const heroSection = document.getElementById("hero-section") as HTMLElement | null;
 		const orb = document.getElementById("hero-orb") as HTMLElement | null;
+		const icons = Array.from(document.querySelectorAll<HTMLElement>(".stack-icon"));
 		if (!heroSection || !orb) return;
 
-		const prefersFinePointer = window.matchMedia("(pointer: fine)").matches;
 		const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+		// --- скрол: иконките леко "плават" нагоре/надолу спрямо позицията на hero-то ---
+		let ticking = false;
+		function updateParallax() {
+			ticking = false;
+			const rect = heroSection!.getBoundingClientRect();
+			const progress = Math.max(-1, Math.min(1, -rect.top / (rect.height || 1)));
+			icons.forEach((icon) => {
+				const speed = parseFloat(icon.dataset.speed ?? "15");
+				const offset = prefersReducedMotion ? 0 : progress * speed;
+				icon.style.transform = `translate(-50%, calc(-50% + ${offset}px))`;
+			});
+		}
+		function onScroll() {
+			if (!ticking) {
+				ticking = true;
+				requestAnimationFrame(updateParallax);
+			}
+		}
+		window.addEventListener("scroll", onScroll, { passive: true });
+		window.addEventListener("resize", updateParallax);
+		updateParallax();
+
+		// --- мишка: лек 3D наклон на цялата композиция (снимка + иконки) ---
+		const prefersFinePointer = window.matchMedia("(pointer: fine)").matches;
 		if (!prefersFinePointer || prefersReducedMotion) return;
 
 		const maxTilt = 6;
