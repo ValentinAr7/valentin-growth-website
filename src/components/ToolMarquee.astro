@@ -1,0 +1,166 @@
+---
+const rowA = [
+	{ name: "Shopify", slug: "shopify", color: "95BF47" },
+	{ name: "WooCommerce", slug: "woocommerce", color: "96588A" },
+	{ name: "Meta Ads", slug: "meta", color: "0081FB" },
+	{ name: "Google Ads", slug: "googleads", color: "FFFFFF" },
+	{ name: "Klaviyo", slug: "klaviyo", color: "FFFFFF" },
+];
+
+const rowB = [
+	{ name: "Instagram", slug: "instagram", color: "E4405F" },
+	{ name: "TikTok", slug: "tiktok", color: "FFFFFF" },
+	{ name: "ChatGPT", slug: "openai", color: "FFFFFF" },
+	{ name: "Claude", slug: "claude", color: "D97757" },
+	{ name: "Google Analytics", slug: "googleanalytics", color: "FFFFFF" },
+];
+---
+
+<section class="border-t border-white/5 py-16 sm:py-20" aria-label="Инструменти, с които работя">
+	<p class="mx-auto mb-8 max-w-6xl px-6 text-center text-xs font-semibold tracking-[0.2em] text-gray-500 uppercase sm:mb-10">
+		Платформи и инструменти, с които работя всеки ден
+	</p>
+
+	<div class="flex flex-col gap-4 sm:gap-5">
+		<div class="marquee-track" style="--fade: 48px;">
+			<div class="marquee-row" data-speed="0.18" data-direction="-1">
+				{
+					[...rowA, ...rowA].map((tool) => (
+						<span class="chip">
+							<img
+								src={`https://cdn.simpleicons.org/${tool.slug}/${tool.color}`}
+								alt=""
+								class="h-5 w-5 object-contain sm:h-6 sm:w-6"
+								loading="lazy"
+							/>
+							{tool.name}
+						</span>
+					))
+				}
+			</div>
+		</div>
+
+		<div class="marquee-track" style="--fade: 48px;">
+			<div class="marquee-row" data-speed="0.14" data-direction="1">
+				{
+					[...rowB, ...rowB].map((tool) => (
+						<span class="chip">
+							<img
+								src={`https://cdn.simpleicons.org/${tool.slug}/${tool.color}`}
+								alt=""
+								class="h-5 w-5 object-contain sm:h-6 sm:w-6"
+								loading="lazy"
+							/>
+							{tool.name}
+						</span>
+					))
+				}
+			</div>
+		</div>
+	</div>
+</section>
+
+<script>
+	function initMarquee() {
+		const rows = Array.from(document.querySelectorAll<HTMLElement>(".marquee-row"));
+		if (!rows.length) return;
+
+		const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+		const state = rows.map((row) => ({
+			row,
+			half: row.scrollWidth / 2,
+			speed: parseFloat(row.dataset.speed ?? "0.15"),
+			direction: parseFloat(row.dataset.direction ?? "1"),
+			visible: false,
+		}));
+
+		state.forEach(({ row }) => {
+			const observer = new IntersectionObserver(
+				([entry]) => {
+					const target = state.find((s) => s.row === row);
+					if (target) target.visible = entry.isIntersecting;
+				},
+				{ rootMargin: "100px" },
+			);
+			observer.observe(row.parentElement ?? row);
+		});
+
+		if (prefersReducedMotion) return;
+
+		let ticking = false;
+
+		function update() {
+			ticking = false;
+			const scrollY = window.scrollY;
+
+			state.forEach(({ row, half, speed, direction, visible }) => {
+				if (!visible || half <= 0) return;
+				const raw = scrollY * speed * direction;
+				const offset = ((raw % half) + half) % half;
+				row.style.transform = `translateX(${-offset}px)`;
+			});
+		}
+
+		function onScroll() {
+			if (!ticking) {
+				ticking = true;
+				requestAnimationFrame(update);
+			}
+		}
+
+		window.addEventListener("scroll", onScroll, { passive: true });
+		window.addEventListener("resize", () => {
+			state.forEach((s) => {
+				s.half = s.row.scrollWidth / 2;
+			});
+		});
+		update();
+	}
+
+	initMarquee();
+	document.addEventListener("astro:page-load", initMarquee);
+</script>
+
+<style>
+	.marquee-track {
+		overflow: hidden;
+		-webkit-mask-image: linear-gradient(
+			to right,
+			transparent 0,
+			black var(--fade, 48px),
+			black calc(100% - var(--fade, 48px)),
+			transparent 100%
+		);
+		mask-image: linear-gradient(
+			to right,
+			transparent 0,
+			black var(--fade, 48px),
+			black calc(100% - var(--fade, 48px)),
+			transparent 100%
+		);
+	}
+
+	.marquee-row {
+		display: flex;
+		width: max-content;
+		gap: 0.75rem;
+		will-change: transform;
+		padding: 0 1.5rem;
+	}
+
+	.chip {
+		display: inline-flex;
+		flex-shrink: 0;
+		align-items: center;
+		gap: 0.5rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		background: rgba(255, 255, 255, 0.03);
+		padding: 0.6rem 1.1rem;
+		font-size: 0.875rem;
+		font-weight: 500;
+		color: rgb(209 213 219);
+		white-space: nowrap;
+	}
+</style>

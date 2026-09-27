@@ -1,72 +1,39 @@
 ---
-// TODO: замени /images/profile.jpg с реална снимка (виж public/images/README.txt).
-const stack = [
-	{ name: "Shopify", slug: "shopify", color: "95BF47" },
-	{ name: "WooCommerce", slug: "woocommerce", color: "96588A" },
-	{ name: "Meta Ads", slug: "meta", color: "0081FB" },
-	{ name: "TikTok", slug: "tiktok", color: "FFFFFF" },
-	{ name: "Instagram", slug: "instagram", color: "E4405F" },
-	{ name: "Google Ads", slug: "googleads", color: "FFFFFF" },
-	{ name: "ChatGPT", slug: "openai", color: "FFFFFF" },
-	{ name: "Claude", slug: "claude", color: "D97757" },
-];
-
-// Детерминиран seed, за да е еднакво звездното поле при всеки билд.
-function mulberry32(seed: number) {
-	return function () {
-		seed |= 0;
-		seed = (seed + 0x6d2b79f5) | 0;
-		let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-		t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-		return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-	};
-}
-const rand = mulberry32(42);
-const stars = Array.from({ length: 70 }, () => ({
-	top: rand() * 100,
-	left: rand() * 100,
-	size: rand() * 1.6 + 0.6,
-	opacity: rand() * 0.6 + 0.2,
-	delay: rand() * 4,
-	duration: rand() * 3 + 2,
-}));
 ---
 
-<section
-	id="hero-section"
-	class="relative isolate overflow-hidden pt-32 pb-24"
-	style="--mx: 50%; --my: 30%;"
->
-	<!-- фон: звезди + плавен градиент, следващ мишката -->
+<section id="hero-section" class="relative isolate overflow-hidden pt-28 pb-16 sm:pt-32 sm:pb-20">
+	<!-- фон: тъмна база + меки, размазани цветни петна (aurora), вместо "космос" -->
 	<div class="pointer-events-none absolute inset-0">
 		<div class="absolute inset-0 bg-ink-900"></div>
 		<div
-			id="hero-spotlight"
-			class="absolute inset-0 transition-[background] duration-300"
-			style="background: radial-gradient(600px circle at var(--mx) var(--my), rgba(99,102,241,0.16), transparent 60%);"
+			class="absolute top-[-10%] left-1/2 h-[420px] w-[420px] -translate-x-[70%] rounded-full bg-brand-600/25 blur-[110px] sm:h-[560px] sm:w-[560px]"
 		>
 		</div>
-		{
-			stars.map((star) => (
-				<span
-					class="absolute rounded-full bg-white"
-					style={`top:${star.top}%; left:${star.left}%; width:${star.size}px; height:${star.size}px; opacity:${star.opacity}; animation: twinkle ${star.duration}s ease-in-out ${star.delay}s infinite; --star-opacity:${star.opacity};`}
-				/>
-			))
-		}
+		<div
+			class="absolute top-[5%] right-1/2 h-[360px] w-[360px] translate-x-[60%] rounded-full bg-teal-500/15 blur-[110px] sm:h-[480px] sm:w-[480px]"
+		>
+		</div>
+		<div
+			id="hero-spotlight"
+			class="absolute inset-0"
+			style="background: radial-gradient(560px circle at var(--mx, 50%) var(--my, 20%), rgba(99,102,241,0.14), transparent 60%);"
+		>
+		</div>
 	</div>
 
-	<div class="relative mx-auto max-w-6xl px-6 text-center">
-		<!-- орбита със снимка -->
-		<div class="mx-auto mb-10 [perspective:1000px]" style="width: min(380px, 70vw);">
-			<div id="hero-orb" class="relative aspect-square w-full transition-transform duration-150 ease-out">
+	<div class="relative mx-auto flex max-w-6xl flex-col items-center px-6 text-center">
+		<!-- снимка -->
+		<div class="mb-8 [perspective:1000px] sm:mb-10" style="width: min(220px, 42vw);">
+			<div
+				id="hero-orb"
+				class="relative aspect-square w-full transition-transform duration-150 ease-out"
+			>
 				<div
-					id="hero-orb-glow"
-					class="pointer-events-none absolute -inset-6 rounded-full bg-brand-500/40 blur-3xl transition-transform duration-150 ease-out"
+					class="pointer-events-none absolute -inset-4 rounded-full bg-brand-500/30 blur-2xl sm:-inset-6"
 				>
 				</div>
 
-				<div class="relative h-full w-full overflow-hidden rounded-full border border-white/10 bg-ink-800 shadow-[0_0_80px_-20px_rgba(99,102,241,0.5)]">
+				<div class="relative h-full w-full overflow-hidden rounded-full border border-white/10 bg-ink-800 shadow-[0_0_60px_-15px_rgba(99,102,241,0.45)]">
 					<img
 						src="/images/profile-image.png"
 						alt="Валентин Арнаутски"
@@ -76,42 +43,34 @@ const stars = Array.from({ length: 70 }, () => ({
 					<div class="hidden h-full w-full items-center justify-center text-sm text-gray-500">
 						[ снимка на Валентин ]
 					</div>
-					<!-- виньетка за по-драматичен, тъмен изглед -->
-					<div class="pointer-events-none absolute inset-0 rounded-full bg-[radial-gradient(circle_at_50%_40%,transparent_35%,rgba(0,0,0,0.55)_100%)]">
+					<div class="pointer-events-none absolute inset-0 rounded-full bg-[radial-gradient(circle_at_50%_35%,transparent_45%,rgba(0,0,0,0.4)_100%)]">
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<!-- стек от инструменти -->
-		<div class="mx-auto mb-10 flex max-w-2xl flex-wrap items-center justify-center gap-3">
-			{
-				stack.map((tool) => (
-					<div
-						class="group flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] p-2.5 backdrop-blur transition hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.08] sm:h-14 sm:w-14"
-						title={tool.name}
-					>
-						<img
-							src={`https://cdn.simpleicons.org/${tool.slug}/${tool.color}`}
-							alt={tool.name}
-							class="h-full w-full object-contain"
-							loading="lazy"
-						/>
-					</div>
-				))
-			}
+		<div class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-xs font-medium text-gray-300 sm:text-sm">
+			<span class="relative flex h-1.5 w-1.5">
+				<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-400 opacity-75"></span>
+				<span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent-500"></span>
+			</span>
+			Отворен за нови проекти
 		</div>
 
-		<h1 class="mx-auto max-w-3xl text-3xl leading-tight font-semibold text-white sm:text-4xl md:text-5xl">
-			Здравей, аз съм Валентин <span aria-hidden="true">🚀</span> Изграждам
-			<span class="font-extrabold">предвидим E-commerce растеж</span>
-			<span> и </span>
-			<span class="font-serif text-2xl italic text-gray-300 sm:text-3xl md:text-4xl">
-				маркетинг, който продава.
-			</span>
+		<h1 class="mx-auto mt-5 max-w-3xl text-3xl leading-[1.15] font-semibold text-white sm:text-4xl md:text-5xl">
+			Здравей, аз съм Валентин — <span class="font-extrabold">маркетинг партньор</span>
+			<br class="hidden sm:block" />
+			за <span class="font-serif text-2xl italic font-normal text-gray-300 sm:text-3xl md:text-4xl">
+				предвидим
+			</span> E-commerce растеж.
 		</h1>
 
-		<div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+		<p class="mx-auto mt-5 max-w-xl text-base text-gray-400 sm:text-lg">
+			Стратегия, платена реклама и оптимизация на конверсиите за онлайн магазини,
+			които искат измерим резултат — не догадки.
+		</p>
+
+		<div class="mt-8 flex w-full flex-col items-center justify-center gap-3 sm:mt-10 sm:w-auto sm:flex-row">
 			<a
 				href="#contact"
 				class="w-full rounded-full bg-accent-500 px-8 py-3 text-base font-semibold text-ink-900 transition hover:bg-accent-400 sm:w-auto"
@@ -125,14 +84,6 @@ const stars = Array.from({ length: 70 }, () => ({
 				Виж резултатите
 			</a>
 		</div>
-
-		<div class="mt-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-gray-300">
-			<span class="relative flex h-2 w-2">
-				<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-400 opacity-75"></span>
-				<span class="relative inline-flex h-2 w-2 rounded-full bg-accent-500"></span>
-			</span>
-			Отворен за нови проекти
-		</div>
 	</div>
 </section>
 
@@ -140,14 +91,13 @@ const stars = Array.from({ length: 70 }, () => ({
 	function initHeroEffects() {
 		const heroSection = document.getElementById("hero-section") as HTMLElement | null;
 		const orb = document.getElementById("hero-orb") as HTMLElement | null;
-		const glow = document.getElementById("hero-orb-glow") as HTMLElement | null;
-		if (!heroSection || !orb || !glow) return;
+		if (!heroSection || !orb) return;
 
 		const prefersFinePointer = window.matchMedia("(pointer: fine)").matches;
 		const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 		if (!prefersFinePointer || prefersReducedMotion) return;
 
-		const maxTilt = 10;
+		const maxTilt = 6;
 
 		function handleMove(e: MouseEvent) {
 			const heroRect = heroSection!.getBoundingClientRect();
@@ -160,14 +110,8 @@ const stars = Array.from({ length: 70 }, () => ({
 			const dx = e.clientX - cx;
 			const dy = e.clientY - cy;
 
-			const angle = Math.atan2(dy, dx);
-			const radius = orbRect.width / 2;
-			const gx = Math.cos(angle) * radius;
-			const gy = Math.sin(angle) * radius;
-			glow!.style.transform = `translate(${gx * 0.6}px, ${gy * 0.6}px)`;
-
 			const distance = Math.hypot(dx, dy);
-			const influence = Math.max(0, 1 - distance / (radius * 4));
+			const influence = Math.max(0, 1 - distance / (orbRect.width * 3));
 			const tiltX = Math.max(-1, Math.min(1, -dy / 400)) * maxTilt * influence;
 			const tiltY = Math.max(-1, Math.min(1, dx / 400)) * maxTilt * influence;
 			orb!.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
